@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TODO APP</title>
+    <meta name="todo app" content="todo app website" />
+    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Viga&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <h1>NAH LATER</h1>
+            <p style="font-size: medium">ORGANIZE YOUR CHAOS... EVENTUALLY.</p>
+        </div>
+        <div class="nav-icons">
+            <div class="nav-links">
+                <a href="./index.html">// _CREATE TASK</a>
+                <a href="#view_todo">// _VIEW TASK</a>
+            </div>
+            <button id="dark_mode">
+                <span class="text">// _DARK MODE</span>
+                <img class="dark_icon" src="images/full-moon.png" alt="Dark Mode Icon" />
+                <img class="light_icon" src="images/sun.png" alt="Light Mode Icon" />
+            </button>
+    </nav>
+    <main>
+        <div class="container">
+            <div class="todo_box">
+                <h2 style="text-align: center;">DO IT LATER. TRACK IT NOW.</h3>
+                    <hr>
+                    <form id="todo_form">
+                        <input type="text" id="todo-title" placeholder="TITLE" required />
+                        <input type="text" id="todo-match" placeholder="DESCRIPTION" required />
+                        <input type="text" id="todo-category" placeholder="CATEGORY" required />
+                        <input type="date" id="todo-due" placeholder="DUE DATE" required />
+                        <select aria-label="Priority" id="todo-priority" required>
+                            <option value="">PRIORITY</option>
+                            <option value="🛋 Eh, Whenever">🛋 “Eh, Whenever” – Lowest priority. Could do it. Or not.
+                            </option>
+                            <option value="📅 Someday... Probably">📅 “Someday... Probably” – Medium-low. Might happen
+                                eventually.</option>
+                            <option value="⏰ Soon-ish” – Middle">⏰ “Soon-ish” – Middle. Feels mildly urgent but still
+                                ignorable.</option>
+                            <option value="🚨 Kinda Important">🚨 “Kinda Important” – Higher priority. Should probably
+                                do this.</option>
+                            <option value="🔥 Do It NOW, Dummy">🔥 “Do It NOW, Dummy” – Highest priority. Everything's
+                                on fire.</option>
+                        </select>
+                        <button type="submit" id="view_todo">CREATE YOUR TASK!</button>
+                    </form>
+            </div>
+            <h2 style="text-align: center;">YOUR TASKS</h2>
+            <hr>
+            <div id="todo_list"></div>
+            <div id="editModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <h2>Edit Todo</h2>
+                    <form id="edit_form">
+                        <input type="text" id="edit-title" placeholder="TITLE" required />
+                        <input type="text" id="edit-desc" placeholder="DESCRIPTION" required />
+                        <input type="text" id="edit-category" placeholder="CATEGORY" required />
+                        <input type="text" id="edit-priority" placeholder="PRIORITY" required />
+                        <input type="date" id="edit-due-date" placeholder="DUE DATE" required />
+                        <button type="submit">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+    </main>
+    <footer>
+        <div class="footer_container">
+            <p>Copyright &copy; 2025 <b>Adrien Dejonc</b>. All Rights Reserved.</b></p>
+        </div>
+    </footer>
+</body>
+<script src="./scripts/todo_main.js" type="module" defer></script>
+<script src="./scripts/dark_mode.js" defer></script>
+<style>
+
+</style>
+
+</html>
