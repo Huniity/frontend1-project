@@ -882,6 +882,9 @@ body {
 @media (max-width: 450px) {
     .container {
         min-height: calc(100vh - 296.77px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     .navbar {
         flex-direction: column;
