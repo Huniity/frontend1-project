@@ -18,11 +18,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     const editPriorityInput = document.getElementById("edit-priority");
     const editDueDateInput = document.getElementById("edit-due-date");
 
+
     const renderTodos = async () => {
         try {
             const todos = await getTodo();
+            const searchText = document.getElementById("search-input").value.toLowerCase();
+            const selectedDate = document.getElementById("calendar-widget").value;
+
+
+            const filtered = todos.filter(todo => {
+                const matchesSearch = todo.title.toLowerCase().includes(searchText) || todo.desc.toLowerCase().includes(searchText);
+                const matchesDate = selectedDate ? new Date(todo.due_date).toISOString().split('T')[0] === selectedDate : true;
+                return matchesSearch && matchesDate;
+            });
+
             todoList.innerHTML = "";
-            todos.forEach((todo) => {
+            renderDashboard(todos);
+
+            filtered.forEach((todo) => {
                 const card = document.createElement("div");
                 card.className = "todo_card";
                 card.innerHTML = `
@@ -36,6 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <p>${todo.desc}</p>
                             <p><strong>Priority:</strong> ${todo.priority}</p>
                             <p><strong>Created:</strong> ${formatDate(todo.createdAt)}</p>
+                            <p><strong>Due:</strong> ${formatDate(todo.due_date)}</p>
                             <p><strong>Status:</strong> ${todo.is_done ? "Completed" : "Pending"}</p>
                         </div>
                         <div class="card-footer">
@@ -47,78 +61,58 @@ document.addEventListener("DOMContentLoaded", async () => {
                 `;
                 todoList.appendChild(card);
             });
-
-            document.querySelectorAll(".done_btn").forEach((button) => {
-                button.addEventListener("click", handleDoneTodo);
-            });
-
-            document.querySelectorAll(".edit_btn").forEach((button) => {
-                button.addEventListener("click", handleEditTodo);
-            });
-
-            document.querySelectorAll(".delete_btn").forEach((button) => {
-                button.addEventListener("click", handleDeleteTodo);
-            });
         } catch (error) {
-            console.error("Error fetching todos:", error);
+            console.error("Error rendering todos:", error);
         }
     };
-    const handleDoneTodo = async (e) => {
-        const todoId = e.target.dataset.id;
-        const todo = await getTodoById(todoId);
-        const updatedData = {
-            ...todo,
-            is_done: !todo.is_done,
-        };
-        try {
-            await editTodo(todoId, updatedData);
-            renderTodos();
-        } catch (error) {
-            console.error("Error updating todo:", error);
-        }
-    }
-    const handleEditTodo = async (e) => {
-        const todoId = e.target.dataset.id; // Get the ID of the todo to edit
-        const todo = await getTodoById(todoId); // Fetch the specific todo
+    // Contar tarefas e fazer render em %
+    const renderDashboard = (todos) => {
+        const recapContainer = document.getElementById("category-recap");
+        recapContainer.innerHTML = "";
 
-        // Populate the modal form with the todo's current data
-        editTitleInput.value = todo.title;
-        editDescInput.value = todo.desc;
-        editCategoryInput.value = todo.category;
-        editPriorityInput.value = todo.priority;
-        editDueDateInput.value = todo.due_date;
+        const categoryMap = {};
 
-        // Show the modal
-        editModal.style.display = "block";
+        const totalTasks = todos.length;
+        const completedTasks = todos.filter(t => t.is_done).length;
+        const categories = [...new Set(todos.map(t => t.category))].length;
+    
+        animateCounter("total-tasks", totalTasks);
+        animateCounter("completed-tasks", completedTasks);
+        animateCounter("total-categories", categories);
+    
 
-        // Update the form submission to handle editing
-        editForm.onsubmit = async (e) => {
-            e.preventDefault();
-
-            const updatedData = {
-                title: editTitleInput.value,
-                desc: editDescInput.value,
-                category: editCategoryInput.value,
-                priority: editPriorityInput.value,
-                due_date: editDueDateInput.value,
-            };
-
-            try {
-                await editTodo(todoId, updatedData); // Call the API to update the todo
-                editModal.style.display = "none"; // Close the modal
-                renderTodos(); // Re-render the todos
-            } catch (error) {
-                console.error("Error editing todo:", error);
+        todos.forEach(todo => {
+            if (!categoryMap[todo.category]) {
+                categoryMap[todo.category] = { total: 0, done: 0 };
             }
-        };
+            categoryMap[todo.category].total++;
+            if (todo.is_done) categoryMap[todo.category].done++;
+        });
+
+        Object.entries(categoryMap).forEach(([category, stats]) => {
+            const percent = Math.round((stats.done / stats.total) * 100);
+            const card = document.createElement("div");
+            card.className = "recap-card";
+            card.innerHTML = `
+                <h4>${category}</h4>
+                <p>${percent}% Completed</p>
+            `;
+            recapContainer.appendChild(card);
+        });
     };
 
-    // Close the modal when the close button is clicked
+    document.getElementById("search-input").addEventListener("input", renderTodos);
+    document.getElementById("calendar-widget").addEventListener("change", renderTodos);
+    document.getElementById("resetButton").addEventListener("click", () => {
+        document.getElementById("search-input").value = "";
+        document.getElementById("calendar-widget").value = "";
+        renderTodos();
+    });
+
     closeModalBtn.addEventListener("click", () => {
         editModal.style.display = "none";
     });
 
-    // Close the modal when clicking outside the modal content
     window.addEventListener("click", (e) => {
         if (e.target === editModal) {
             editModal.style.display = "none";
@@ -128,38 +122,191 @@ document.addEventListener("DOMContentLoaded", async () => {
     const handleDeleteTodo = async (e) => {
         const todoId = e.target.dataset.id;
 
-        if (confirm("Are you sure you want to delete this todo?")) {
+        const isConfirmed = await showConfirmation(
+            "Wanna Delete this task?",
+            "Deleting is permanent. Are you Sure?",
+            "Yes, delete it!",
+            "No, keep it"
+        );
+
+        if (isConfirmed) {
             try {
                 await deleteTodo(todoId);
                 renderTodos();
+                showToast("success", "Todo deleted successfully!");
             } catch (error) {
                 console.error("Error deleting todo:", error);
+                showToast("error", "Failed to delete todo.");
             }
+        } else {
+            showToast("info", "Todo deletion canceled.");
         }
     };
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    if (form) {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-        const postData = {
-            id: Date.now().toString(),
-            title: document.getElementById("todo-title").value,
-            desc: document.getElementById("todo-match").value,
-            category: document.getElementById("todo-category").value,
-            priority: document.getElementById("todo-priority").value,
-            is_done: false,
-            createdAt: new Date().toISOString(),
-            due_date: document.getElementById("todo-due").value,
-        };
+            const postData = {
+                id: Date.now().toString(),
+                title: document.getElementById("todo-title").value,
+                desc: document.getElementById("todo-match").value,
+                category: document.getElementById("todo-category").value,
+                priority: document.getElementById("todo-priority").value,
+                is_done: false,
+                createdAt: new Date().toISOString(),
+                due_date: document.getElementById("todo-due").value,
+            };
+
+            try {
+                await createTodo(postData);
+                form.reset();
+                renderTodos();
+                showToast("success", "Todo created successfully!");
+            } catch (error) {
+                console.error("Error creating todo:", error);
+                showToast("error", "Failed to create todo.");
+            }
+        });
+    }
+
+    const handleEditTodo = async (e) => {
+        const todoId = e.target.dataset.id;
 
         try {
-            await createTodo(postData);
-            form.reset();
-            renderTodos();
+            const todo = await getTodoById(todoId);
+
+            editTitleInput.value = todo.title;
+            editDescInput.value = todo.desc;
+            editCategoryInput.value = todo.category;
+            editPriorityInput.value = todo.priority;
+            editDueDateInput.value = todo.due_date;
+
+            editModal.style.display = "block";
+
+            editForm.onsubmit = async (event) => {
+                event.preventDefault();
+
+                const updatedTodo = {
+                    ...todo,
+                    title: editTitleInput.value,
+                    desc: editDescInput.value,
+                    category: editCategoryInput.value,
+                    priority: editPriorityInput.value,
+                    due_date: editDueDateInput.value,
+                };
+
+                try {
+                    await editTodo(todoId, updatedTodo);
+                    editModal.style.display = "none";
+                    renderTodos();
+                    showToast("success", "Todo updated successfully!");
+                } catch (error) {
+                    console.error("Error updating todo:", error);
+                    showToast("error", "Failed to update todo.");
+                }
+            };
         } catch (error) {
-            console.error("Error creating todo:", error);
+            console.error("Error fetching todo for editing:", error);
+        }
+    };
+
+    const handleDoneTodo = async (e) => {
+        const todoId = e.target.dataset.id;
+
+        try {
+            const todo = await getTodoById(todoId);
+
+            const updatedTodo = {
+                ...todo,
+                is_done: !todo.is_done,
+            };
+
+            await editTodo(todoId, updatedTodo);
+            renderTodos();
+
+            if (updatedTodo.is_done) {
+                showToast("success", "Task marked as completed!");
+            } else {
+                showToast("info", "Task marked as pending.");
+            }
+        } catch (error) {
+            console.error("Error updating todo status:", error);
+            showToast("error", "Failed to update task status.");
+        }
+    };
+
+    todoList.addEventListener("click", (e) => {
+        const target = e.target;
+
+        if (target.classList.contains("done_btn")) {
+            handleDoneTodo(e);
+        }
+
+        if (target.classList.contains("edit_btn")) {
+            handleEditTodo(e);
+        }
+
+        if (target.classList.contains("delete_btn")) {
+            handleDeleteTodo(e);
         }
     });
 
     renderTodos();
 });
+function animateCounter(id, target) {
+    const el = document.getElementById(id);
+    let count = 0;
+    const increment = target / 60; // smooth speed
+
+    const update = () => {
+        count += increment;
+        if (count < target) {
+            el.textContent = Math.ceil(count);
+            requestAnimationFrame(update);
+        } else {
+            el.textContent = target;
+        }
+    };
+
+    requestAnimationFrame(update);
+}
+
+const showToast = (icon, title) => {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        },
+    });
+
+    Toast.fire({
+        icon: icon,
+        title: title,
+        background: "#b0b0b0",
+        color: "#000000",
+        width: "500px",
+    });
+};
+
+const showConfirmation = async (title, text, confirmButtonText = "Yes", cancelButtonText = "No") => {
+    const result = await Swal.fire({
+        title: title,
+        text: text,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: confirmButtonText,
+        cancelButtonText: cancelButtonText,
+        background: "#b0b0b0",
+        color: "#000000",
+    });
+
+    return result.isConfirmed; // Returns true if the user clicks "Yes"
+};

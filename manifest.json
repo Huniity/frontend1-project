@@ -5,13 +5,15 @@
     "background_color": "#1c1c1c",
     "display": "standalone",
     "scope": "/",
-    "start_url": "",
-    "description": "Anothewr Todo List for people who forgot stuff",
+    "start_url": "/index.html",
+    "description": "Organize your chaos with Nah Later, the ultimate to-do list app!",
+    "lang": "en-US",
     "orientation": "any",
     "icons": [
         {
-            "src": "https://christine.website/static/img/avatar.png",
-            "sizes": "1024x1024"
+            "src": "images/favicon.png",
+            "sizes": "512x512",
+            "type": "image/png"
         }
     ]
 }

@@ -3,14 +3,17 @@
 
 <head>
     <meta charset="UTF-8" />
+    <link rel="icon" href="./images/favicon.png" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TODO APP</title>
-    <meta name="todo app" content="todo app website" />
+    <title>NAH LATER</title>
+    <meta name="description" content="todo app website" />
     <link rel="stylesheet" href="styles/index.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Viga&display=swap" rel="stylesheet">
-    <title>Document</title>
+    <link preconnect href="https://67f56836913986b16fa476aa.mockapi.io">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
 </head>
 
 <body>
@@ -21,69 +24,108 @@
         </div>
         <div class="nav-icons">
             <div class="nav-links">
-                <a href="./index.html">// _CREATE TASK</a>
-                <a href="#view_todo">// _VIEW TASK</a>
+                <a href="./create_task.html">// _CREATE TASK</a>
+                <a href="./index.html">// _VIEW TASK</a>
             </div>
             <button id="dark_mode">
                 <span class="text">// _DARK MODE</span>
                 <img class="dark_icon" src="images/full-moon.png" alt="Dark Mode Icon" />
                 <img class="light_icon" src="images/sun.png" alt="Light Mode Icon" />
             </button>
+        </div>
     </nav>
     <main>
         <div class="container">
-            <div class="todo_box">
-                <h2 style="text-align: center;">DO IT LATER. TRACK IT NOW.</h3>
-                    <hr>
-                    <form id="todo_form">
-                        <input type="text" id="todo-title" placeholder="TITLE" required />
-                        <input type="text" id="todo-match" placeholder="DESCRIPTION" required />
-                        <input type="text" id="todo-category" placeholder="CATEGORY" required />
-                        <input type="date" id="todo-due" placeholder="DUE DATE" required />
-                        <select aria-label="Priority" id="todo-priority" required>
-                            <option value="">PRIORITY</option>
-                            <option value="🛋 Eh, Whenever">🛋 “Eh, Whenever” – Lowest priority. Could do it. Or not.
-                            </option>
-                            <option value="📅 Someday... Probably">📅 “Someday... Probably” – Medium-low. Might happen
-                                eventually.</option>
-                            <option value="⏰ Soon-ish” – Middle">⏰ “Soon-ish” – Middle. Feels mildly urgent but still
-                                ignorable.</option>
-                            <option value="🚨 Kinda Important">🚨 “Kinda Important” – Higher priority. Should probably
-                                do this.</option>
-                            <option value="🔥 Do It NOW, Dummy">🔥 “Do It NOW, Dummy” – Highest priority. Everything's
-                                on fire.</option>
-                        </select>
-                        <button type="submit" id="view_todo">CREATE YOUR TASK!</button>
-                    </form>
+            <div class="dashboard">
+                <div class="parent">
+                    <div class="div1"><div class="weather_widget"><div id="ww_e220dca0f1940" v='1.3' loc='auto' a='{"t":"horizontal","lang":"en","sl_lpl":1,"ids":[],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722","el_whr":3,"el_phw":3}'>
+                        More forecasts: <a href="https://oneweather.org/orlando/30_days/" id="ww_e220dca0f1940_u" target="_blank">Orlando weather 30 day
+                        </a></div><script async src="https://app3.weatherwidget.org/js/?id=ww_e220dca0f1940"></script></div></div>
+                    <div class="div2"></div>
+                    <div class="div3"><h2>LAZY DASHBOARD</h2><p id="datetime_title" style="font-size:small; color:rgb(124, 124, 124)"></p></div>
+                    <div class="div4"><canvas id="canva_circle" width="200" height="50"></canvas></div>
+                    <div class="div5">
+                        <div id="calendar-widget" class="calendar-widget">
+                            <input type="hidden" id="calendar-widget">
+                            <div class="calendar-header">
+                                <button id="prev-month">&lt;</button>
+                                <h2 id="current-month"></h2>
+                                <button id="next-month">&gt;</button>
+                            </div>
+                            <div class="calendar-days">
+                                <div class="day-name">Sun</div>
+                                <div class="day-name">Mon</div>
+                                <div class="day-name">Tue</div>
+                                <div class="day-name">Wed</div>
+                                <div class="day-name">Thu</div>
+                                <div class="day-name">Fri</div>
+                                <div class="day-name">Sat</div>
+                            </div>
+                            <div id="calendar-dates" class="calendar-dates"></div>
+                        </div>
+                    </div>
+                    <div class="div6">
+                        <input type="text" id="search-input" placeholder="Search todos..." />
+                        <button id="resetButton">Reset</button>
+                    </div>
+                    <div class="div7">
+                        <div class="counter-box">
+                            <h3>Total Tasks</h3>
+                            <div class="counter" id="total-tasks">0</div>
+                        </div>
+                        <div class="counter-box">
+                            <h3>Completed</h3>
+                            <div class="counter" id="completed-tasks">0</div>
+                        </div>
+                        <div class="counter-box">
+                            <h3>Categories</h3>
+                            <div class="counter" id="total-categories">0</div>
+                        </div>
+                    </div>
+                    <div class="div8"><div id="category-recap" class="recap-container"></div></div>
+                    <div class="div9"></div>
+                </div>     
             </div>
-            <h2 style="text-align: center;">YOUR TASKS</h2>
-            <hr>
-            <div id="todo_list"></div>
-            <div id="editModal" class="modal">
-                <div class="modal-content">
-                    <span class="close-btn">&times;</span>
-                    <h2>Edit Todo</h2>
-                    <form id="edit_form">
-                        <input type="text" id="edit-title" placeholder="TITLE" required />
-                        <input type="text" id="edit-desc" placeholder="DESCRIPTION" required />
-                        <input type="text" id="edit-category" placeholder="CATEGORY" required />
-                        <input type="text" id="edit-priority" placeholder="PRIORITY" required />
-                        <input type="date" id="edit-due-date" placeholder="DUE DATE" required />
-                        <button type="submit">Save Changes</button>
-                    </form>
+                <h2 style="text-align: center;">YOUR TASKS</h2>
+                <hr>
+
+                <div id="todo_list"></div>
+                <div id="editModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-btn">&times;</span>
+                        <h2>Edit Todo</h2>
+                        <form id="edit_form">
+                            <input type="text" id="edit-title" placeholder="TITLE" required />
+                            <input type="text" id="edit-desc" placeholder="DESCRIPTION" required />
+                            <input type="text" id="edit-category" placeholder="CATEGORY" required />
+                            <input type="text" id="edit-priority" placeholder="PRIORITY" required />
+                            <input type="date" id="edit-due-date" placeholder="DUE DATE" required />
+                            <button type="submit">Save Changes</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
     </main>
-    <footer>
-        <div class="footer_container">
-            <p>Copyright &copy; 2025 <b>Adrien Dejonc</b>. All Rights Reserved.</b></p>
-        </div>
-    </footer>
+    <shared-footer></shared-footer>
 </body>
 <script src="./scripts/todo_main.js" type="module" defer></script>
 <script src="./scripts/dark_mode.js" defer></script>
-<style>
-
-</style>
-
+<script src="./scripts/utils.js" type="module" defer></script>
+<script src="./scripts/canvas.js" defer></script>
+<script src="./scripts/datetime.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="./scripts/shared_components.js" type="module" defer></script>
+<script>
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker
+                .register("./scripts/service_worker.js")
+                .then((registration) => {
+                    console.log("Service Worker registered with scope:", registration.scope);
+                })
+                .catch((error) => {
+                    console.error("Service Worker registration failed:", error);
+                });
+        });
+    }
+</script>
 </html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="./images/favicon.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NAH LATER</title>
+    <meta name="description" content="todo app website" />
+    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Viga&display=swap" rel="stylesheet">
+    <link preconnect href="https://67f56836913986b16fa476aa.mockapi.io">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <h1>NAH LATER</h1>
+            <p style="font-size: medium">ORGANIZE YOUR CHAOS... EVENTUALLY.</p>
+        </div>
+        <div class="nav-icons">
+            <div class="nav-links">
+                <a href="./create_task.html">// _CREATE TASK</a>
+                <a href="./index.html">// _VIEW TASK</a>
+            </div>
+            <button id="dark_mode">
+                <span class="text">// _DARK MODE</span>
+                <img class="dark_icon" src="images/full-moon.png" alt="Dark Mode Icon" />
+                <img class="light_icon" src="images/sun.png" alt="Light Mode Icon" />
+            </button>
+        </div>
+    </nav>
+    <main>
+        <div class="container" style="display: flex; justify-content: center; align-items: center">
+            <div class="todo_box">
+                <h2 style="text-align: center;">DO IT LATER. TRACK IT NOW.</h3>
+                    <hr>
+                    <form id="todo_form">
+                        <input type="text" id="todo-title" placeholder="TITLE" required />
+                        <input type="text" id="todo-match" placeholder="DESCRIPTION" required />
+                        <select aria-label="category" id="todo-category" required>
+                            <option value="">CATEGORY</option>
+                            <option value="🏠 HOME"> 🏠 HOME
+                            </option>
+                            <option value="🎓 SCHOOL"> 🎓SCHOOL
+                            </option>
+                            <option value="💼 WORK"> 💼 WORK
+                            </option>
+                            <option value="🏃‍♂️ SPORT"> 🏃‍♂️ SPORT
+                            </option>
+                            <option value="📌 OTHER"> 📌 OTHER </option>
+                        </select>
+                        <input type="date" id="todo-due" placeholder="DUE DATE" required />
+                        <select aria-label="Priority" id="todo-priority" required>
+                            <option value="">PRIORITY</option>
+                            <option value="🛋 Eh, Whenever">🛋 “Eh, Whenever” – Lowest.
+                            </option>
+                            <option value="📅 Someday... Probably">📅 “Someday... Probably” – Medium-low.
+
+                            </option>
+                            <option value="⏰ Soon-ish” – Middle">⏰ “Soon-ish” – Medium.</option>
+                            <option value="🚨 Kinda Important">🚨 “Kinda Important” – Higher.</option>
+                            <option value="🔥 Do It NOW, Dummy">🔥 “Do It NOW, Dummy” – Highest.</option>
+                        </select>
+                        <button type="submit" id="view_todo">CREATE YOUR TASK!</button>
+                    </form>
+            </div>
+    </main>
+    <shared-footer></shared-footer>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="./scripts/create_task.js" type="module" defer></script>
+<script src="./scripts/dark_mode.js" defer></script>
+<script src="./scripts/shared_components.js" type="module" defer></script>
+
+</html>
