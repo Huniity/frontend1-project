@@ -97,7 +97,9 @@ body {
 #dark_mode .text {
     display: inline;
 }
-  
+.navbar .logo img{
+    display: none;
+}
 .navbar .logo:hover {
     color: var(--accent);
     transition: var(--transition);
@@ -778,6 +780,12 @@ body {
     .navbar p {
         display: none;
     }
+    .navbar .logo img{
+        display: block;
+    }
+    .navbar .logo h1 {
+        display: none;
+    }
     .todo_box {
         margin-top: 70px;
         width: 90%;
@@ -880,6 +888,13 @@ body {
         align-items: center;
         
     }
+    .navbar .logo img{
+        display: block;
+        margin-left: 40px;
+    }
+    .navbar .logo h1 {
+        display: none;
+    }
     .navbar .nav-icons a {
         margin-top: 10px;
         font-size: small;
@@ -965,6 +980,12 @@ body {
     }
     .todo_box {
         height: auto;
+    }
+    .navbar .logo img{
+        display: block;
+    }
+    .navbar .logo h1 {
+        display: none;
     }
 }
 @media (max-width: 360px) {
